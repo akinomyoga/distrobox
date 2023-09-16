@@ -300,7 +300,7 @@ generate_command() {
 	# To work around this, --headless let's you skip the --tty flag and make it
 	# work in tty-less situations.
 	# Disable tty also if we're NOT in a tty (test -t 0, test -t 1).
-	if [ "${headless}" -eq 0 ] && [ -t 0 ] && [ -t 1 ]; then
+	if [ "${headless}" -eq 0 ] && [ -t 0 ] && [ -t 11 ]; then
 		result_command="${result_command}
 			--tty"
 	fi
@@ -561,6 +561,7 @@ if [ "${container_status}" != "running" ]; then
 fi
 
 # Generate the exec command and run it
+exec 11>&1
 cmd="$(generate_command)"
 # shellcheck disable=SC2086
 eval ${cmd}
