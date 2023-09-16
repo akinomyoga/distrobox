@@ -429,16 +429,14 @@ generate_command() {
 		result_command="${result_command}
 			sh -c \"\\\$(getent passwd ${USER} | cut -f 7 -d :) -l"\"
 	fi
-
-	# Return generated command.
-	printf "%s" "${result_command}"
 }
 
 container_home="${HOME}"
 container_path="${PATH}"
 # dry run mode, just generate the command and print it. No execution.
 if [ "${dryrun}" -ne 0 ]; then
-	cmd="$(generate_command)"
+	generate_command
+  cmd="$result_command"
 	cmd="$(echo "${cmd}" | sed 's/\t//g')"
 	printf "%s\n" "${cmd}"
 	exit 0
@@ -561,6 +559,7 @@ if [ "${container_status}" != "running" ]; then
 fi
 
 # Generate the exec command and run it
-cmd="$(generate_command)"
+generate_command
+cmd="$result_command"
 # shellcheck disable=SC2086
 eval ${cmd}
